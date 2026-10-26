@@ -1,36 +1,46 @@
-# [Nome do Projeto]: Data Warehouse para análise de incêndios
+# Supplier Quality Analysis: Data Warehouse para análise da qualidade de fornecedores
 
 Trabalho prático da unidade curricular **Tópicos Avançados de Armazenamento de Dados**
 (Mestrado em Engenharia Informática, ESTG – Politécnico do Porto, 2026/2027).
 
-> Sistema de Business Intelligence com Data Warehouse, arquitetura *medallion*
-> (Bronze, Silver, Gold), camada de proveniência W3C PROV-O e dashboards de análise.
+> Sistema de Business Intelligence com Data Warehouse, arquitetura _medallion_
+> (Bronze, Silver, Gold), camada de proveniência W3C PROV-O e dashboards de análise
+> da qualidade de fornecedores.
 
 ## Autores
 
-| Nome | Número |
-|---|---|
-| Luís [Apelido] | [nº] |
-| [Nome] | [nº] |
-| [Nome] | [nº] |
+| Nome             | Número  |
+| ---------------- | ------- |
+| Luís Morais      | 8230258 |
+| Francisco Morais | 8230204 |
 
 ## Caso de estudo
 
-[Descrever em 3 a 5 linhas o caso de estudo, os requisitos de análise e a relevância do sistema.]
+[Descrever em 3 a 5 linhas o caso de estudo: a análise da qualidade de fornecedores, os
+defeitos registados por fábrica, material e tipo de defeito, e o impacto em tempo de paragem.]
 
 **Questões de negócio a que o sistema responde:**
 
-- [ex.: Como evolui o número de ocorrências por distrito e por mês?]
-- [ex.: Que recursos são mobilizados por tipologia de incêndio?]
-- [ex.: Qual a relação entre as condições meteorológicas e a intensidade das ocorrências?]
+- Que fornecedores têm mais defeitos e mais minutos de paragem associados?
+- Como evolui a quantidade de defeitos por mês, ano e fábrica?
+- Que tipos de defeito e que categorias de material concentram mais problemas?
+- Como se compara o período atual com o mesmo período do ano anterior?
+- [Acrescentar outras questões do grupo]
 
 ## Fontes de dados
 
-| Fonte | Grão (um registo =) | Frequência | Deteção de novos registos | Natureza |
-|---|---|---|---|---|
-| [ex.: Fogos.pt / ANEPC] | uma ocorrência | [contínua] | [id incremental / timestamp] | Operacional |
-| [ex.: IPMA] | uma leitura de estação | [horária] | [timestamp] | Operacional |
-| [ex.: ICNF / INE] | [grão] | [anual] | [n/a] | Complementar |
+| Fonte                                | Grão (um registo =)           | Frequência            | Deteção de novos registos | Natureza                |
+| ------------------------------------ | ----------------------------- | --------------------- | ------------------------- | ----------------------- |
+| Supplier Quality Analysis (Obvience) | [a confirmar após exportação] | [simulada por replay] | [data do registo]         | [Operacional / amostra] |
+| [Fonte complementar, se existir]     | [grão]                        | [frequência]          | [mecanismo]               | Complementar            |
+
+**Origem dos dados e atribuição:** os dados provêm de um ficheiro de exemplo fornecido pela
+Obvience (www.obvience.com) para demonstração de Power BI, e estão contidos num modelo
+Power Pivot. Qualquer utilização dos dados deve incluir a atribuição à Obvience e o aviso
+de direitos de autor **obviEnce ©**.
+
+**Simulação de carga contínua:** [descrever o mecanismo, por exemplo o replay ordenado por
+data dos registos históricos, com a marca de água por fonte.]
 
 ## Arquitetura
 
@@ -49,9 +59,10 @@ Orquestração (único ponto) + Tabelas de controlo (execuções e marcas de ág
 
 ### Modelo dimensional
 
-- **Tabelas de factos:** `[FactX]` (grão: …), `[FactY]` (grão: …)
-- **Dimensões:** `[DimLocal]`, `[DimTipologia]`, `[DimCausa]`, `[DimMeio]`, `[DimTempo]`, …
-- **Dimensão com história (SCD2):** `[DimX]`
+- **Tabelas de factos:** `[FactDefeito]` (grão: …) e `[FactParagem]` ou outra, a validar com o docente
+- **Dimensões:** `DimData`, `DimFornecedor`, `DimFabrica`, `DimDefeito`, `DimTipoDefeito`, `DimTipoMaterial`, `DimSubCategoria`
+- **Dimensão com história (SCD2):** `[DimFornecedor ou DimFabrica]`
+- **Medidas:** quantidade de defeitos, minutos de paragem, número de relatórios de defeito, comparação com o período homólogo
 
 ### Princípios do processo de povoamento (ETL)
 
@@ -99,7 +110,7 @@ Orquestração (único ponto) + Tabelas de controlo (execuções e marcas de ág
 ### Pré-requisitos
 
 - [Listar software e versões]
-- [Listar contas ou chaves de API necessárias]
+- [Listar contas ou chaves necessárias]
 
 ### Configuração
 
@@ -135,9 +146,10 @@ proveniência e visualização) está em [`demo/`](demo/).
 
 O artigo, em formato LNCS, está em [`relatorio/`](relatorio/).
 
-## Licença
+## Licença e atribuição
 
-Distribuído sob a licença MIT. Consultar o ficheiro [LICENSE](LICENSE).
+O código é distribuído sob a licença MIT. Consultar o ficheiro [LICENSE](LICENSE).
 
-Os dados utilizados pertencem às respetivas entidades e estão sujeitos aos seus próprios
-termos de utilização. Consultar a secção de fontes.
+Os dados do caso de estudo pertencem à Obvience e são partilhados apenas para demonstração
+de funcionalidades de Power BI. Qualquer utilização deve incluir a atribuição à Obvience
+e o aviso **obviEnce ©**. A licença MIT não se aplica aos dados.
